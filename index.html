@@ -59,7 +59,7 @@
         
         
         <li class="nav-item my-auto ms-3 ms-lg-0">
-          <a href="#!" class="btn btn-sm  bg-gradient-default  mb-0 me-1 mt-2 mt-md-0" id="btn-logout" style="display: none;" onclick="logOut()" >Cerrar Sesión</a>
+          <a href="#!" class="btn btn-sm  bg-gradient-default  mb-0 me-1 mt-2 mt-md-0" id="btn-logout" style="display: none;" >Cerrar Sesión</a>
           <a href="#!" class="btn btn-sm  bg-gradient-primary  mb-0 me-1 mt-2 mt-md-0" id="btn-login" style="display: none;" data-bs-toggle="modal" data-bs-target="#loginModal">Iniciar Sesión</a>
           
         </li>
@@ -139,15 +139,23 @@
   <div class="modal-dialog modal-dialog-centered" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="loginModalLabel">Selecciona una opción</h5>
+        <h5 class="modal-title" id="loginModalLabel">Conecta tu wallet</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
       <div class="modal-body">
-        <button class="btn btn-primary" onclick="loginMetamask()">Metamask</button>
-        <br>
-        <button class="btn btn-primary" onclick="loginWalletConnect()">Wallet Connect</button>
+          <div class="row">
+              <div class="col-12 text-center">
+                <img src="./assets/img/metamask.png" height="100px" width="100px" alt=""><br>
+                <button class="btn btn-outline-warning" id="btnLoginMetamask">Conecta Metamask</button>
+              </div>
+              <hr>
+              <div class="col-12 text-center">
+                <img src="./assets/img/walletconnect.png" height="90px" width="90px" alt=""><br>
+                <button class="btn btn-outline-info" id="btnLoginWalletConnect">Usa WalletConnect</button>
+              </div>
+          </div>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn bg-gradient-secondary" data-bs-dismiss="modal">Cerrar</button>

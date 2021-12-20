@@ -1,6 +1,8 @@
 /** Connect to Moralis server */
 const serverUrl = "https://pcnmagsrxw6a.usemoralis.com:2053/server"; //Server url from moralis.io
 const appId = "GYGePgEvetMgQtvW2FJrK93yguMCIFECys5mqoe0"; // Application id from moralis.io
+const CONTRACT_ADDRESS = "0xD7d3606c7351F9237C4faAc74F854153dBcE1113";
+
 Moralis.start({ serverUrl, appId });
 
 /** Add from here down */
@@ -58,7 +60,12 @@ function fetchNFTMetadata(NFTs){
         .then(res => res.json())
         .then(res => JSON.parse(res.result))
         .then(res => { nft.metadata = res })
-        .then( () => {return nft; } ));
+        .then(res => {
+          const options = { address: CONTRACT_ADDRESS, token_id: id, chain: "rinkeby" };
+          console.log()
+          return Moralis.Web3API.token.getTokenIdOwners(options)
+        })
+        .then( (res) => {return nft; } ));
   }
 
   return Promise.all(promises);
@@ -68,7 +75,7 @@ function fetchNFTMetadata(NFTs){
 
 printNFTs = async () => {
 
-    const options = { address:"0xD7d3606c7351F9237C4faAc74F854153dBcE1113", chain :"rinkeby" };
+    const options = { address: CONTRACT_ADDRESS, chain :"rinkeby" };
     let NFTs = await Moralis.Web3API.token.getAllTokenIds(options);
     let NDTWithMetadata = await fetchNFTMetadata(NFTs.result);
     $('#spinner-loading').hide();
@@ -95,11 +102,11 @@ checkUser = async () => {
     $("#btn-logout").show();
     $("#btn-login").hide();
     
-    if($('#loginModal').hasClass('in'))
+    if($('#loginModal').hasClass('show'))
     {
         $("#loginModal").modal('toggle');
     }
-    
+    BtnsLoginReset();
 
   } else {
     $("#btn-logout").hide();
@@ -107,5 +114,50 @@ checkUser = async () => {
   }
 };
 
-checkUser();
-printNFTs();
+function BtnLoading(elem) {
+  $(elem).attr("data-original-text", $(elem).html());
+  $(elem).prop("disabled", true);
+  $(elem).html('<i class="spinner-border spinner-border-sm"></i> Loading...');
+}
+
+function BtnReset(elem) {
+  $(elem).prop("disabled", false);
+  $(elem).html($(elem).attr("data-original-text"));
+}
+
+function BtnsLoginReset(){
+  BtnReset($('#btnLoginMetamask'));
+  BtnReset($('#btnLoginWalletConnect'));
+}
+
+$(document).ready(function() {
+
+
+  //inicio 
+  checkUser();
+  printNFTs();
+
+
+  //clicks
+  $('#btnLoginMetamask').click(function(){
+    var $this = $(this);
+    BtnLoading($this);
+    loginMetamask();
+  });
+
+  $('#btnLoginWalletConnect').click(function(){
+    // var $this = $(this);
+    // BtnLoading($this);
+    loginWalletConnect();
+  });
+
+  $('#btn-logout').click(function(){
+    var $this = $(this);
+    BtnLoading($this);
+    logOut();
+  });
+
+
+});
+
+
