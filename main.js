@@ -65,7 +65,16 @@ function fetchNFTMetadata(NFTs){
           console.log()
           return Moralis.Web3API.token.getTokenIdOwners(options)
         })
-        .then( (res) => {return nft; } ));
+        .then( (res) => { 
+          
+          nft.owners = [];
+          res.result.forEach(element => {
+            nft.owners.push(element.ownerOf)
+          })
+          
+          return nft;
+        
+        }));
   }
 
   return Promise.all(promises);
@@ -83,12 +92,14 @@ printNFTs = async () => {
     for(let i = 0; i < NDTWithMetadata.length; i++)
     {
       console.log(NDTWithMetadata[i]);
-      
+      const nft = NDTWithMetadata[i];
       nft_cloned = $('.nft-example').clone();
       nft_cloned.removeClass("nft-example");
-      nft_cloned.find('.nft-img').attr('src', NDTWithMetadata[i].metadata.image);
-      nft_cloned.find('.nft-name').text(NDTWithMetadata[i].metadata.name);
-
+      nft_cloned.find('.nft-img').attr('src', nft.metadata.image);
+      nft_cloned.find('.nft-name').text(nft.metadata.name);
+      nft_cloned.find('.nft-description').text(nft.metadata.description);
+      nft_cloned.find('.nft-tokens').text(nft.amount)
+      nft_cloned.find('.nft-owners').text(nft.owners.length)
       $('#div-nfts').append(nft_cloned);
       nft_cloned.show('fast');
 
