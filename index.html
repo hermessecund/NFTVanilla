@@ -56,7 +56,11 @@
 
         
 
-        
+        <li class="nav-item px-3" id="nav-user" style="display: none;">
+          <a class="nav-link text-success" id="user-account">
+            
+          </a>
+        </li>
         
         <li class="nav-item my-auto ms-3 ms-lg-0">
           <a href="#!" class="btn btn-sm  bg-gradient-default  mb-0 me-1 mt-2 mt-md-0" id="btn-logout" style="display: none;" >Cerrar Sesión</a>
@@ -103,43 +107,45 @@
               </div>
             </a>
           </div>
-          
-          <div id="div-nfts" class="row">
-            
-            <div class="col-md-4 nft-example" style="display:none">
-                <div class="card" data-animation="true">
-                    <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
-                      <a class="d-block blur-shadow-image">
-                        <img src="https://demos.creative-tim.com/test/material-dashboard-pro/assets/img/products/product-1-min.jpg" alt="img-blur-shadow" class="img-fluid shadow border-radius-lg nft-img">
-                      </a>
-                      <div class="colored-shadow" style="background-image: url(&quot;https://demos.creative-tim.com/test/material-dashboard-pro/assets/img/products/product-1-min.jpg&quot;);"></div>
-                    </div>
-                    <div class="card-body text-center">
-                      <div class="d-flex mt-n6 mx-auto">
-                        <a class="btn btn-link text-primary ms-auto border-0" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Refresh">
-                          <i class="material-icons text-lg">refresh</i>
-                        </a>
-                        <button class="btn btn-link text-info me-auto border-0" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Edit">
-                          <i class="material-icons text-lg">edit</i>
-                        </button>
-                      </div>
-                      <h5 class="font-weight-normal mt-3 ">
-                        <a href="javascript:;" class="nft-name">Cozy 5 Stars Apartment</a>
-                      </h5>
-                      <p class="mb-0 nft-description">
-                        
-                      </p>
-                      <p>Cantidad: <span class="nft-tokens"></span></p>
-                      <p>N° de dueños: <span class="nft-owners"></span></p>
-                    </div>
-                    <hr class="dark horizontal my-0">
-                    <div class="card-footer d-flex">
-                      <p class="font-weight-normal my-auto">$8/ETH</p>
-                      <i class="material-icons position-relative ms-auto text-lg me-1 my-auto">place</i>
-                      <p class="text-sm my-auto"> Santiago, Chile</p>
-                    </div>
+
+          <div class="col-md-6 col-lg-4 col-sm-12 nft-example" style="display:none">
+            <div class="card" data-animation="true">
+                <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
+                  <a class="d-block blur-shadow-image">
+                    <img src="https://demos.creative-tim.com/test/material-dashboard-pro/assets/img/products/product-1-min.jpg" alt="img-blur-shadow" class="img-fluid shadow border-radius-lg nft-img">
+                  </a>
+                  <div class="colored-shadow" style="background-image: url(&quot;https://demos.creative-tim.com/test/material-dashboard-pro/assets/img/products/product-1-min.jpg&quot;);"></div>
+                </div>
+                <div class="card-body text-center">
+                  <div class="d-flex mt-n6 mx-auto">
+                    <a class="btn btn-link text-primary ms-auto border-0 nft-btn-mint" data-id="" data-bs-toggle="tooltip" data-bs-placement="bottom" title="mint">
+                      mint
+                    </a>
+                    <button class="btn btn-link text-info me-auto border-0 nft-btn-transfer" data-id="" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Edit">
+                      transfer
+                    </button>
+                  </div>
+                  <h5 class="font-weight-normal mt-3 ">
+                    <a href="javascript:;" class="nft-name">Cozy 5 Stars Apartment</a>
+                  </h5>
+                  <p class="mb-0 nft-description">
+                    
+                  </p>
+                  <p>Cantidad: <span class="nft-tokens"></span></p>
+                  <p>Tu Balance: <span class="nft-your-balance"></span></p>
+                  <p>N° de dueños: <span class="nft-owners"></span></p>
+                </div>
+                <hr class="dark horizontal my-0">
+                <div class="card-footer d-flex">
+                  <p class="font-weight-normal my-auto">$8/ETH</p>
+                  <i class="material-icons position-relative ms-auto text-lg me-1 my-auto">place</i>
+                  <p class="text-sm my-auto"> Santiago, Chile</p>
                 </div>
             </div>
+        </div>
+        
+          <div id="div-nfts" class="row">
+            
 
           </div>
           
@@ -204,6 +210,78 @@
 </div>
 
 
+<!-- Modal -->
+<div class="modal fade" id="mintModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Mint</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="p-4">
+          <form>
+            <div class="input-group input-group-static mb-4">
+              <label>Address</label>
+              <input type="text" id="mint_address" class="form-control">
+            </div>
+            <div class="input-group input-group-static mb-4">
+              <label>Token Id</label>
+              <input type="text" id="mint_token_id" class="form-control">
+            </div>
+            <div class="input-group input-group-static mb-4">
+              <label>Cantidad</label>
+              <input type="number" id="mint_amount" class="form-control">
+            </div>
+          </form>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn bg-gradient-secondary" data-bs-dismiss="modal">Cerrar</button>
+        <button type="button" class="btn bg-gradient-primary" id="submit_mint">Mint</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- Modal -->
+<div class="modal fade" id="transferModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Transfer</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="p-4">
+          <form>
+            <div class="input-group input-group-static mb-4">
+              <label>Address</label>
+              <input type="text" id="transfer_address" class="form-control">
+            </div>
+            <div class="input-group input-group-static mb-4">
+              <label>Token Id</label>
+              <input type="text" id="transfer_token_id" class="form-control">
+            </div>
+            <div class="input-group input-group-static mb-4">
+              <label>Cantidad</label>
+              <input type="number" id="transfer_amount" class="form-control">
+            </div>
+          </form>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn bg-gradient-secondary" data-bs-dismiss="modal">Cerrar</button>
+        <button type="button" class="btn bg-gradient-primary" id="submit_transfer">Transfer</button>
+      </div>
+    </div>
+  </div>
+</div>
 
 
 

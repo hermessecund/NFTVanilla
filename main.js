@@ -2,6 +2,8 @@
 const serverUrl = "https://pcnmagsrxw6a.usemoralis.com:2053/server"; //Server url from moralis.io
 const appId = "GYGePgEvetMgQtvW2FJrK93yguMCIFECys5mqoe0"; // Application id from moralis.io
 const CONTRACT_ADDRESS = "0xD7d3606c7351F9237C4faAc74F854153dBcE1113";
+const CONTRACT_ABI = '';
+const currentUser = '';
 
 Moralis.start({ serverUrl, appId });
 
@@ -9,13 +11,11 @@ Moralis.start({ serverUrl, appId });
 
 async function loginMetamask() {
   let user = Moralis.User.current();
-  console.log(user);
   if (user == null) {
     
       user = await Moralis.authenticate()
-      console.log(user)
-      console.log(user.get('ethAddress'))
       checkUser();
+      printNFTs();
    
   }
 }
@@ -31,9 +31,8 @@ async function loginWalletConnect() {
     };
     user = await Moralis.authenticate(authOptions)
       .then(function (user) {
-        console.log("logged in user:", user);
-        console.log(user.get("ethAddress"));
         checkUser();
+        printNFTs();
       })
       .catch(function (error) {
         console.log(error);
@@ -69,7 +68,7 @@ function fetchNFTMetadata(NFTs){
           
           nft.owners = [];
           res.result.forEach(element => {
-            nft.owners.push(element.ownerOf)
+            nft.owners.push(element.owner_of)
           })
           
           return nft;
@@ -81,14 +80,35 @@ function fetchNFTMetadata(NFTs){
 
 }
 
+function getOwnerData(){
+
+  let accounts = $('#user-account').text();
+  const options = { chain: "rinkeby", address: accounts, token_address: CONTRACT_ADDRESS };
+  return Moralis.Web3API.account.getNFTsForContract(options).then((data) => {
+    let result = data.result.reduce( (object, currentElement) => {
+      object[currentElement.token_id] = currentElement.amount;
+      return object;
+    }, {})
+    console.log(result);
+    return result;
+  });
+
+}
+
 
 printNFTs = async () => {
 
     const options = { address: CONTRACT_ADDRESS, chain :"rinkeby" };
     let NFTs = await Moralis.Web3API.token.getAllTokenIds(options);
+    let ownerData = [];
+    if(checkUser())
+    {
+      ownerData = await getOwnerData();
+    }
+    
     let NDTWithMetadata = await fetchNFTMetadata(NFTs.result);
     $('#spinner-loading').hide();
-
+    $('#div-nfts').empty();
     for(let i = 0; i < NDTWithMetadata.length; i++)
     {
       console.log(NDTWithMetadata[i]);
@@ -98,8 +118,18 @@ printNFTs = async () => {
       nft_cloned.find('.nft-img').attr('src', nft.metadata.image);
       nft_cloned.find('.nft-name').text(nft.metadata.name);
       nft_cloned.find('.nft-description').text(nft.metadata.description);
+      nft_cloned.find('.nft-btn-mint').data('id', nft.token_id)
+      nft_cloned.find('.nft-btn-transfer').data('id', nft.token_id)
       nft_cloned.find('.nft-tokens').text(nft.amount)
       nft_cloned.find('.nft-owners').text(nft.owners.length)
+      if(Object.keys(ownerData).length > 0)
+      {
+        nft_cloned.find('.nft-your-balance').text(ownerData[nft.token_id])
+      }
+      else
+      {
+        nft_cloned.find('.nft-your-balance').text(0)
+      }
       $('#div-nfts').append(nft_cloned);
       nft_cloned.show('fast');
 
@@ -107,9 +137,43 @@ printNFTs = async () => {
 
 }
 
+async function mint() {
+  let token_id = $('#mint_token_id').val(); 
+  let amount = $('#mint_amount').val();
+  let address = $('#mint_address').val();
+
+  const contract = new web3.eth.Contract("", CONTRACT_ADDRESS);
+  contract.methods.mint(address, token_id, amount).send({from: address, value:0})
+  .on("receipt", function(receipt){
+    alert('Mint done');
+  });
+
+}
+
+async function transfer() {
+  let token_id = $('#transfer_token_id').val(); 
+  let amount = $('#transfer_amount').val();
+  let address = $('#transfer_address').val();
+
+  //cuenta 1: 0x9b26f31BA462818BE0405DC12fd374C482DE2A43
+  //cuenta 2: 0xbd4693B2Af4F728F4A0Cf392b29E6D837B264810
+  
+  const options = {type: "erc1155",  
+  receiver: address,
+  contractAddress: CONTRACT_ADDRESS,
+  tokenId: token_id,
+  amount: amount}
+  console.log(options);
+  let result = await Moralis.transfer(options)
+  .on("receipt", function(receipt){
+    alert('Transfer done');
+  });
+  
+}
 
 checkUser = async () => {
-  if (await Moralis.User.current()) {
+  user = await Moralis.User.current();
+  if (user) {
     $("#btn-logout").show();
     $("#btn-login").hide();
     
@@ -117,11 +181,19 @@ checkUser = async () => {
     {
         $("#loginModal").modal('toggle');
     }
+
+    $('#nav-user').show();
+    $('#user-account').text(user.get('ethAddress'));
+
     BtnsLoginReset();
+    return true;
 
   } else {
+    $('#nav-user').hide();
     $("#btn-logout").hide();
     $("#btn-login").show();
+
+    return false;
   }
 };
 
@@ -139,6 +211,7 @@ function BtnReset(elem) {
 function BtnsLoginReset(){
   BtnReset($('#btnLoginMetamask'));
   BtnReset($('#btnLoginWalletConnect'));
+  BtnReset($('#btn-logout'));
 }
 
 $(document).ready(function() {
@@ -168,6 +241,38 @@ $(document).ready(function() {
     logOut();
   });
 
+  $(document).on('click', '.nft-btn-mint', function() {
+
+    let token_id = $(this).data('id');
+    
+    $('#mintModal').find('#mint_token_id').val(token_id);
+    $('#mintModal').find('#mint_address').val($('#user-account').text());
+    $('#mintModal').modal('show');
+
+    
+  });
+
+  $(document).on('click', '.nft-btn-transfer', function() {
+
+    let token_id = $(this).data('id');
+    
+    $('#transferModal').find('#transfer_token_id').val(token_id);
+    $('#transferModal').modal('show');
+
+    
+  });
+
+  $('#submit_mint').click(function(){
+
+    mint();
+
+  });
+
+  $('#submit_transfer').click(function(){
+
+    transfer();
+
+  });
 
 });
 
