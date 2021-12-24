@@ -44,6 +44,7 @@ async function logOut() {
   await Moralis.User.logOut();
   console.log("logged out");
   checkUser();
+  printNFTs();
 }
 
 
@@ -97,18 +98,20 @@ function getOwnerData(){
 
 
 printNFTs = async () => {
-
+    $('#div-nfts').empty();
+    $('#spinner-loading').show();
     const options = { address: CONTRACT_ADDRESS, chain :"rinkeby" };
     let NFTs = await Moralis.Web3API.token.getAllTokenIds(options);
     let ownerData = [];
-    if(checkUser())
+    
+    let check = await checkUser();
+    if(check)
     {
       ownerData = await getOwnerData();
     }
     
     let NDTWithMetadata = await fetchNFTMetadata(NFTs.result);
     $('#spinner-loading').hide();
-    $('#div-nfts').empty();
     for(let i = 0; i < NDTWithMetadata.length; i++)
     {
       console.log(NDTWithMetadata[i]);
@@ -165,7 +168,8 @@ async function transfer() {
   amount: amount}
   console.log(options);
   let result = await Moralis.transfer(options)
-  .on("receipt", function(receipt){
+  
+  result.on("receipt", function(receipt){
     alert('Transfer done');
   });
   
