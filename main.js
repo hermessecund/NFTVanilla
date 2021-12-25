@@ -40,6 +40,45 @@ async function loginWalletConnect() {
   }
 }
 
+
+signup = async (email, password) => {
+
+  const user = new Moralis.User();
+  user.set("username", email);
+  user.set("password", password);
+  user.set("email", email);
+
+  try {
+    await user.signUp();
+    console.log('signup user');
+    console.log(user);
+    alert('Te enviamos email para verificar tu cuenta')
+    checkUser();
+  } catch (error) {
+    $('#div-error-signin-signup').show();
+    $('#error-signin-signup').text("Error: " + error.code + " " + error.message);
+    return false;
+  }
+
+}
+
+
+login = async (email, password) => {
+  try {
+    const user = await Moralis.User.logIn(email, password);
+    checkUser();
+  
+  } catch (error) {
+    
+    $('#div-error-signin-signup').show();
+    $('#error-signin-signup').text("Error: " + error.code + " " + error.message);
+    return false;
+  }
+
+}
+
+
+
 async function logOut() {
   await Moralis.User.logOut();
   console.log("logged out");
@@ -244,6 +283,99 @@ $(document).ready(function() {
     BtnLoading($this);
     logOut();
   });
+
+  $('#btn-show-signup').click(function(){
+    //cambiar texto
+    
+
+    //cambiar boton
+    $('#btn-signin').hide();
+    $('#btn-signup').show();
+
+    $('#btn-show-signin').show();
+    $('#btn-show-signup').hide();
+
+    $('#texto-signin-signup').hide();
+
+    $('#btn-olvide-contrasena').show();
+
+    $('#btn-olvide-contrasena').hide();
+    //mostrar iniciar sesión
+  });
+
+  $('#btn-show-signin').click(function(){
+    //cambiar texto
+    $('#texto-signin-signup').show();
+
+    //cambiar boton
+    $('#btn-signin').show();
+    $('#btn-signup').hide();
+
+    $('#btn-show-signin').hide();
+    $('#btn-show-signup').show();
+    $('#div-contrasena').show();
+    
+    $('#btn-reset').hide();
+    $('#btn-olvide-contrasena').show();
+    
+
+    //mostrar iniciar sesión
+  });
+
+  $('#btn-olvide-contrasena').click(function(){
+    //esconder contraseña
+    $('#div-contrasena').hide();
+
+    //cambiar boton
+    $('#btn-signin').hide();
+    $('#btn-signup').hide();
+
+    $('#btn-reset').show();
+
+    $('#btn-show-signup').hide();
+    $('#btn-show-signin').show();
+
+    $('#btn-olvide-contrasena').hide();
+
+  });
+
+  $('#btn-signin').click(function(){
+
+    let email = $('#email-signin-signup').val();
+    let password = $('#password-signin-signup').val();
+
+    login(email, password);
+    
+    //checkUser();
+    
+
+  });
+
+  $('#btn-signup').click(function(){
+    let email = $('#email-signin-signup').val();
+    let password = $('#password-signin-signup').val();
+    signup(email, password);
+
+
+    //checkUser();
+    
+
+  });
+
+  $('#btn-reset').click(function(){
+
+      let email = $('#email-signin-signup').val();
+      Moralis.User.requestPasswordReset(email)
+      .then(() => {
+        // Password reset request was sent successfully
+        alert('Te enviamos un email para resetear tu contraseña')
+      }).catch((error) => {
+        // Show the error message somewhere
+        alert("Error: " + error.code + " " + error.message);
+      });
+
+  });
+
 
   $(document).on('click', '.nft-btn-mint', function() {
 

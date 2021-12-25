@@ -65,7 +65,6 @@
         <li class="nav-item my-auto ms-3 ms-lg-0">
           <a href="#!" class="btn btn-sm  bg-gradient-default  mb-0 me-1 mt-2 mt-md-0" id="btn-logout" style="display: none;" >Cerrar Sesión</a>
           <a href="#!" class="btn btn-sm  bg-gradient-primary  mb-0 me-1 mt-2 mt-md-0" id="btn-login" style="display: none;" data-bs-toggle="modal" data-bs-target="#loginModal">Iniciar Sesión</a>
-          
         </li>
       </ul>
     </div>
@@ -143,7 +142,7 @@
                 </div>
             </div>
         </div>
-        
+
           <div id="div-nfts" class="row">
             
 
@@ -190,17 +189,71 @@
         </button>
       </div>
       <div class="modal-body">
-          <div class="row">
-              <div class="col-12 text-center">
-                <img src="./assets/img/metamask.png" height="100px" width="100px" alt=""><br>
-                <button class="btn btn-outline-warning" id="btnLoginMetamask">Conecta Metamask</button>
+
+          <ul class="nav nav-tabs" id="myTab" role="tablist">
+            <li class="nav-item" role="presentation">
+              <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home" type="button" role="tab" aria-controls="home" aria-selected="true">
+                Ingresar con Wallet
+              </button>
+            </li>
+            <li class="nav-item" role="presentation">
+              <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile" type="button" role="tab" aria-controls="profile" aria-selected="false">
+                Ingreso normal
+              </button>
+            </li>
+          </ul>
+          <div class="tab-content" id="myTabContent">
+            <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+              <div class="row">
+                  <div class="col-12 text-center">
+                    <img src="./assets/img/metamask.png" height="100px" width="100px" alt=""><br>
+                    <button class="btn btn-outline-warning" id="btnLoginMetamask">Conecta Metamask</button>
+                  </div>
+                  <hr>
+                  <div class="col-12 text-center">
+                    <img src="./assets/img/walletconnect.png" height="90px" width="90px" alt=""><br>
+                    <button class="btn btn-outline-info" id="btnLoginWalletConnect">Usa WalletConnect</button>
+                  </div>
               </div>
-              <hr>
-              <div class="col-12 text-center">
-                <img src="./assets/img/walletconnect.png" height="90px" width="90px" alt=""><br>
-                <button class="btn btn-outline-info" id="btnLoginWalletConnect">Usa WalletConnect</button>
-              </div>
+            </div>
+            <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+
+                <div class="p-4">
+                  <form>
+                    <div class="alert alert-danger alert-dismissible fade show" id="div-error-signin-signup" style="display: none;" role="alert">
+                      <span class="alert-icon"><i class="ni ni-active-40"></i></span>
+                      <span class="alert-text text-white" id="error-signin-signup"></span>
+                      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
+                          <span aria-hidden="true">&times;</span>
+                      </button>
+                  </div>
+                    <p>Completa los datos del formulario</p>
+                    <div class="input-group input-group-outline mb-4">
+                      <label class="form-label">Email</label>
+                      <input type="email" id="email-signin-signup" class="form-control">
+                    </div>
+
+                    <div class="input-group input-group-outline mb-4" id="div-contrasena">
+                      <label class="form-label">Contraseña</label>
+                      <input type="password" id="password-signin-signup" class="form-control">
+                    </div>
+
+                    <button type="button" id="btn-signin" class="btn btn-outline-primary btn-lg w-100">Iniciar Sesión</button>
+                    <button type="button" id="btn-signup" style="display: none;" class="btn btn-outline-success btn-lg w-100">Crear Cuenta</button>
+                    <button type="button" id="btn-reset" style="display: none;" class="btn btn-outline-warning btn-lg w-100">Resetear Password</button>
+                    <br>
+                    <label for="" id="texto-signin-signup">¿No tienes cuenta?</label>
+                    <a href="#" id="btn-show-signup">Crear cuenta</a>
+                    <a href="#" id="btn-show-signin" style="display: none;">Volver a iniciar sesión</a>
+                    <br><br>
+                    <a href="#" id="btn-olvide-contrasena" class="text-info">Olvidé mi contraseña</a>
+                  </form>
+                </div>
+
+            </div>
+            
           </div>
+          
       </div>
       <div class="modal-footer">
         <button type="button" class="btn bg-gradient-secondary" data-bs-dismiss="modal">Cerrar</button>
