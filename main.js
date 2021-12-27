@@ -123,6 +123,11 @@ function fetchNFTMetadata(NFTs){
 function getOwnerData(){
 
   let accounts = $('#user-account').text();
+  console.log(accounts.trim());
+  if(accounts.trim() == '')
+  {
+    return []; 
+  }
   const options = { chain: "rinkeby", address: accounts, token_address: CONTRACT_ADDRESS };
   return Moralis.Web3API.account.getNFTsForContract(options).then((data) => {
     let result = data.result.reduce( (object, currentElement) => {
