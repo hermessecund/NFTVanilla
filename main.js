@@ -1,12 +1,12 @@
 /** Connect to Moralis server */
-const serverUrl = "https://pcnmagsrxw6a.usemoralis.com:2053/server"; //Server url from moralis.io
-const appId = "GYGePgEvetMgQtvW2FJrK93yguMCIFECys5mqoe0"; // Application id from moralis.io
+const serverUrl = "https://hdpxpzjmlpx6.usemoralis.com:2053/server";
+const appId = "t07EZ6BykNBSZJ9JX4teirTdZLXJuZynTSePicOq";
 const CONTRACT_ADDRESS = "0xD7d3606c7351F9237C4faAc74F854153dBcE1113";
 const CONTRACT_ABI = '';
 const currentUser = '';
 
 Moralis.start({ serverUrl, appId });
-
+      
 /** Add from here down */
 
 async function loginMetamask() {
